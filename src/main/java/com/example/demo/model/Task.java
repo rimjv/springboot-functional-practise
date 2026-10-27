@@ -3,12 +3,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 
 @Entity
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id; private String title;
+
+    private long id;
+    @NotBlank(message = "tile must not be blank")
+    @Size(max = 100, message= " title must be less than 100")
+    private String title;
     private String description;
     private String status;
     private Task(){}

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.TaskNotFoundException;
 import com.example.demo.model.Task;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class TaskController {
 
         @PostMapping
         @ResponseStatus(HttpStatus.CREATED)
-        public Task createTask(@RequestBody Task task){
+        public Task createTask(@Valid @RequestBody Task task){
 
         return taskRepository.save(task);
         }
@@ -48,7 +49,7 @@ public class TaskController {
         }
 
         @PutMapping("/{id}")
-        public ResponseEntity<Task> updateTask(@PathVariable Long id,@RequestBody  Task updateTask){
+        public ResponseEntity<Task> updateTask(@PathVariable Long id,@Valid  @RequestBody  Task updateTask){
         return taskRepository.findById(String.valueOf(id)).map(existing -> {
                 existing.setTitle(updateTask.getTitle());
                 existing.setDescription(updateTask.getDescription());

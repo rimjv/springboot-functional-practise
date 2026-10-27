@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.TaskNotFoundException;
 import com.example.demo.model.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.repository.TaskRepository;
+
 
 import java.util.List;
 
@@ -30,11 +32,11 @@ public class TaskController {
         return taskRepository.save(task);
         }
 
-
-        @GetMapping("/{id}")
-        public ResponseEntity<Task> getTaskById(@PathVariable Long id){
-        return taskRepository.findById(String.valueOf(id)).map(ResponseEntity :: ok).orElse(ResponseEntity.notFound().build());
-        }
+    @GetMapping("/{id}")
+    public Task getTaskById(@PathVariable Long id) {
+        return taskRepository.findById(String.valueOf(id))
+                .orElseThrow(() -> new TaskNotFoundException(id));
+    }
 
         @DeleteMapping("/{id}")
         public ResponseEntity<Task> deleteTaskById(@PathVariable Long id){

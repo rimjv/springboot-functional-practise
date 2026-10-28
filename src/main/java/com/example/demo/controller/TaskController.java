@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.TaskRequest;
+import com.example.demo.dto.TaskResponse;
 import com.example.demo.exception.TaskNotFoundException;
 import com.example.demo.model.Task;
+import com.example.demo.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,47 +19,39 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskRepository taskRepository  ;
+    private final TaskService taskService ;
 
-    public TaskController(TaskRepository taskRepository) {
+    public TaskController(TaskRepository taskRepository, TaskService taskService) {
         this.taskRepository = taskRepository;
+        this.taskService = taskService;
     }
 
         @GetMapping
-        public List<Task> getAllTasks(){
-            return taskRepository.findAll();
+        public List<TaskResponse> getAllTasks(){
+            return taskService.getAllTasks();
         }
 
         @PostMapping
         @ResponseStatus(HttpStatus.CREATED)
-        public Task createTask(@Valid @RequestBody Task task){
+        public TaskResponse createTask(@Valid @RequestBody TaskRequest task){
 
-        return taskRepository.save(task);
+            return taskService.createTask(task) ;
         }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) {
-        return taskRepository.findById(String.valueOf(id))
-                .orElseThrow(() -> new TaskNotFoundException(id));
+    public TaskResponse getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id);
     }
 
         @DeleteMapping("/{id}")
-        public ResponseEntity<Task> deleteTaskById(@PathVariable Long id){
-            if(!taskRepository.existsById(String.valueOf(id)))
-                return ResponseEntity.notFound().build();
-        taskRepository.deleteById(String.valueOf(id));
-
-        return ResponseEntity.noContent().build();
+        @ResponseStatus(HttpStatus.NOT_FOUND)
+        public void deleteTaskById(@PathVariable Long id){
+          taskService.deleteTask(id);
         }
 
         @PutMapping("/{id}")
-        public ResponseEntity<Task> updateTask(@PathVariable Long id,@Valid  @RequestBody  Task updateTask){
-        return taskRepository.findById(String.valueOf(id)).map(existing -> {
-                existing.setTitle(updateTask.getTitle());
-                existing.setDescription(updateTask.getDescription());
-                existing.setStatus(updateTask.getStatus());
-                return ResponseEntity.ok(taskRepository.save(existing));
-            })
-                    .orElse(ResponseEntity.notFound().build());
+        public TaskResponse updateTask(@PathVariable Long id, @Valid  @RequestBody TaskRequest  updateTask){
+       return taskService.updateTask(id,updateTask) ;
 
 
         }

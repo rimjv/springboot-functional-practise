@@ -1,6 +1,7 @@
 package com.example.demo.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,4 +35,15 @@ return new ErrorResponse(LocalDateTime.now(),404,"not found",e.getMessage());
         body.put("message", "Validation failed");
         body.put("errors", fieldErrors);
         return body;
-}}
+}
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUnreadable(HttpMessageNotReadableException ex) {
+        return new ErrorResponse(
+                LocalDateTime.now(),
+                400,
+                "Bad Request",
+                "Invalid request body. Status must be one of: TODO, IN_PROGRESS, DONE"
+        );
+    }}

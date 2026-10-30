@@ -4,7 +4,10 @@ import com.example.demo.dto.TaskRequest;
 import com.example.demo.dto.TaskResponse;
 import com.example.demo.exception.TaskNotFoundException;
 import com.example.demo.model.Task;
+import com.example.demo.model.TaskStatus;
 import com.example.demo.repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +23,11 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<TaskResponse> getAllTasks() {
-        return taskRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<TaskResponse> getAllTasks(TaskStatus status, Pageable pageable) {
+        Page<Task> page = (status == null)
+                ? taskRepository.findAll(pageable)
+                : taskRepository.findByStatus(status, pageable);
+        return page.map(this::toResponse);
     }
 
     @Transactional(readOnly = true)

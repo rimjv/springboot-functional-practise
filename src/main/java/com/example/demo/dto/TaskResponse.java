@@ -1,14 +1,16 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.TaskStatus;
+
 public class TaskResponse {
     private Long id;
     private String title;
     private String description;
-    private String status;
+    private TaskStatus status;
 
     public TaskResponse() {
     }
-    public TaskResponse(Long id, String title, String description, String status) {
+    public TaskResponse(Long id, String title, String description, TaskStatus status) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -27,7 +29,7 @@ public class TaskResponse {
         return description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 }

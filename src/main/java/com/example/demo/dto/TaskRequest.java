@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class TaskRequest {
@@ -10,9 +12,8 @@ public class TaskRequest {
     private String title ;
     @Size(max = 500, message = "Description must be at most 500 characters")
     private String description ;
-    @NotBlank(message = "Status is required")
-    private String status ;
-
+    @NotNull(message = "Status is required")
+    private TaskStatus status;
     public TaskRequest(){};
 
     public String getTitle() {
@@ -31,11 +32,11 @@ public class TaskRequest {
         this.description = description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 }
